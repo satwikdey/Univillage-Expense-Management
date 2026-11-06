@@ -129,12 +129,10 @@ export const claimService = {
       if (employeeId) constraints.push(where('user_id', '==', employeeId));
       if (dateFrom) constraints.push(where('claim_date', '>=', dateFrom));
       if (dateTo) constraints.push(where('claim_date', '<=', dateTo));
-      constraints.push(orderBy('claim_date', 'desc'));
 
       const snapshot = await getDocs(query(q, ...constraints));
-      if (!snapshot.empty) {
-        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      }
+      const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      return list.sort((a, b) => new Date(b.claim_date || b.submitted_at) - new Date(a.claim_date || a.submitted_at));
     } catch {
       // Fallback
     }

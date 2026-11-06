@@ -204,13 +204,17 @@ export function AuthProvider({ children }) {
   const value = {
     currentUser,
     userProfile,
+    user: userProfile || currentUser,
     loading,
-    login,
-    signup,
-    logout,
     isAdmin: userProfile?.role === 'admin',
     isEmployee: userProfile?.role === 'employee',
-    isApproved: userProfile?.approvalStatus === 'approved',
+    isApproved: userProfile?.approvalStatus === 'approved' && userProfile?.isActive !== false,
+    isPending: userProfile?.approvalStatus === 'pending',
+    isRejected: userProfile?.approvalStatus === 'rejected',
+    login,
+    signup,
+    register: signup,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
